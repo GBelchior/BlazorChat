@@ -1,0 +1,26 @@
+﻿@using Microsoft.AspNetCore.SignalR.Client
+@using Utils
+@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+
+@functions {
+
+private HubConnection connection;
+
+protected override async Task OnInitAsync()
+{
+    string chatHubUri = UriHelper.ToAbsoluteUri("/chatHub").AbsoluteUri;
+
+    connection = new HubConnectionBuilder()
+        .WithUrl(chatHubUri)
+        .Build();
+
+    connection.On<string>("Test", message => Test(message));
+
+    await connection.StartAsync();
+}
+
+public void Test(string message)
+{
+    JSFunctions.Alert(message);
+}
+}
